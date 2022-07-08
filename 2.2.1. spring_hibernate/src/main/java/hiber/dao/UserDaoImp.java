@@ -6,7 +6,6 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.List;
 
@@ -28,25 +27,24 @@ public class UserDaoImp implements UserDao {
    @Override
 
    public List<User> listUsers() {
-      TypedQuery<User> query=sessionFactory.getCurrentSession().createQuery("from User");
+      @SuppressWarnings("unchecked")
+      TypedQuery<User> query=sessionFactory.getCurrentSession().createQuery("FROM User");
       return query.getResultList();
    }
    @Override
 
    public List<Car> listCars() {
-      TypedQuery<Car> query=sessionFactory.getCurrentSession().createQuery("from Car");
+      @SuppressWarnings("unchecked")
+      TypedQuery<Car> query=sessionFactory.getCurrentSession().createQuery("FROM Car");
       return query.getResultList();
    }
    @Override
    public User getUserByCar(String model, int series) {
-      for (Car car : this.listCars()) {
-         if (car.getSeries() == series && car.getModel().equals(model)) {
-            Query query = sessionFactory.getCurrentSession().createQuery("from User where id = :car_id");
-            query.setParameter("car_id", car.getId());
-            return (User) query.getResultList().get(0);
-         }
-      }
-      throw new RuntimeException("Car with this model and series didn't exist in database");
+      @SuppressWarnings("unchecked")
+      TypedQuery<User> query = sessionFactory.getCurrentSession().createQuery("FROM User AS u INNER JOIN FETCH u.car AS car WHERE car.model = :car_model AND car.series = :car_series");
+      query.setParameter("car_model", model);
+      query.setParameter("car_series", series);
+      return query.getResultList().get(0);
    }
 
 }

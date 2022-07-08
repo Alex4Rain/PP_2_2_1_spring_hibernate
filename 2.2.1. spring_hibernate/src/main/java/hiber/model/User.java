@@ -30,13 +30,12 @@ public class User {
       this.firstName = firstName;
       this.lastName = lastName;
       this.email = email;
-//      this.car = car;
    }
-   public User(String firstName, String lastName, String email, Car car) {
+   public User(String firstName, String lastName, String email, String model, int series) {
       this.firstName = firstName;
       this.lastName = lastName;
       this.email = email;
-      this.car = car;
+      this.car = new Car(model, series, this.getId());
    }
 
    public Long getId() {
